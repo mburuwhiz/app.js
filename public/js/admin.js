@@ -85,6 +85,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             tr.innerHTML = `
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${new Date(payment.createdAt).toLocaleString()}</td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">${payment.name || 'N/A'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">${payment.mpesa_receipt_number || 'N/A'}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${payment.phone}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">KES ${payment.amount || 0}</td>

@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         const data = await response.json();
 
         if (data.status === 'success') {
+            document.getElementById('customerName').innerText = data.name || 'N/A';
             document.getElementById('receiptNumber').innerText = data.receipt;
             document.getElementById('amountPaid').innerText = data.amount;
             document.getElementById('refCode').innerText = data.accountReference || 'N/A';

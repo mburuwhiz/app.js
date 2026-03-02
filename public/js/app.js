@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
 
+        const name = document.getElementById('name').value;
         const phone = document.getElementById('phone').value;
         const amount = document.getElementById('amount').value;
         const accountReference = document.getElementById('accountReference').value;
@@ -34,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     'Content-Type': 'application/json',
                     'X-API-Key': apiKey
                 },
-                body: JSON.stringify({ phone, amount, accountReference })
+                body: JSON.stringify({ name, phone, amount, accountReference })
             });
 
             const data = await response.json();

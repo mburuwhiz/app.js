@@ -7,6 +7,10 @@ const paymentSchema = new mongoose.Schema({
     unique: true,
     index: true
   },
+  name: {
+    type: String,
+    required: false
+  },
   phone: {
     type: String,
     required: true

@@ -4,7 +4,7 @@ const logger = require('../config/logger');
 
 exports.stkPush = async (req, res) => {
   try {
-    const { amount, phone, accountReference } = req.body;
+    const { name, amount, phone, accountReference } = req.body;
 
     if (!amount || !phone || !accountReference) {
       return res.status(400).json({ error: 'Missing required parameters' });
@@ -21,6 +21,7 @@ exports.stkPush = async (req, res) => {
     const payment = new Payment({
       checkout_request_id: checkoutRequestId,
       merchant_request_id: merchantRequestId,
+      name: name,
       phone: mpesaService.normalizePhone(phone),
       amount: amount,
       status: 'pending'
@@ -154,6 +155,7 @@ exports.checkStkStatus = async (req, res) => {
       message: payment.result_desc,
       updatedAt: payment.updatedAt,
       phone: payment.phone,
+      name: payment.name,
       accountReference: payment.merchant_request_id
     });
   } catch (error) {

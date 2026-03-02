@@ -151,7 +151,10 @@ exports.checkStkStatus = async (req, res) => {
       status: payment.status,
       amount: payment.amount,
       receipt: payment.mpesa_receipt_number,
-      message: payment.result_desc
+      message: payment.result_desc,
+      updatedAt: payment.updatedAt,
+      phone: payment.phone,
+      accountReference: payment.merchant_request_id
     });
   } catch (error) {
     logger.error(`Check STK Status Error: ${error.message}`);

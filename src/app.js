@@ -30,9 +30,6 @@ const limiter = rateLimit({
 });
 app.use('/api/', limiter);
 
-// Logging Middleware
-app.use(morgan('combined', { stream: { write: message => logger.info(message.trim()) } }));
-
 // Body Parser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -42,6 +39,10 @@ app.use(express.static(path.join(__dirname, '../public')));
 
 // Routes
 app.use('/api', mpesaRoutes);
+
+// Alias root callback just in case URL was misconfigured in Safari developer portal
+const mpesaController = require('./controllers/mpesa.controller');
+app.post('/callback', mpesaController.stkCallback);
 
 // Error Handling Middleware
 app.use((err, req, res, next) => {

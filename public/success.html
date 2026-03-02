@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Successful</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="bg-white p-8 rounded-lg shadow-md w-full max-w-lg text-center">
+        <div class="mb-4">
+            <svg class="mx-auto h-16 w-16 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+        </div>
+        <h2 class="text-3xl font-bold mb-6 text-green-600">Payment Successful!</h2>
+
+        <div class="bg-gray-50 border border-gray-200 rounded-md p-6 text-left space-y-4 shadow-inner">
+            <div class="flex justify-between border-b pb-2">
+                <span class="text-gray-600 font-medium">MPESA Code:</span>
+                <span class="text-gray-900 font-bold" id="receiptNumber">...</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+                <span class="text-gray-600 font-medium">Amount:</span>
+                <span class="text-gray-900 font-bold">KES <span id="amountPaid">...</span></span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+                <span class="text-gray-600 font-medium">Ref Code (Account):</span>
+                <span class="text-gray-900 font-bold" id="refCode">...</span>
+            </div>
+            <div class="flex justify-between border-b pb-2">
+                <span class="text-gray-600 font-medium">Phone:</span>
+                <span class="text-gray-900 font-bold" id="phoneNo">...</span>
+            </div>
+            <div class="flex justify-between">
+                <span class="text-gray-600 font-medium">Date/Time:</span>
+                <span class="text-gray-900 font-bold" id="timestamp">...</span>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <a href="/" class="w-full inline-flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+                Return to Home
+            </a>
+        </div>
+    </div>
+
+    <script src="/js/success.js"></script>
+</body>
+</html>

@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 if (data.status === 'success') {
                     clearInterval(pollInterval);
-                    showSuccess(`Payment successful!`, data.receipt);
+                    window.location.href = `/success.html?checkout=${checkoutRequestId}`;
                 } else if (data.status === 'failed') {
                     clearInterval(pollInterval);
                     showError(data.message || 'Payment failed or cancelled.');
@@ -69,22 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 console.error('Polling error', error);
             }
         }, 5000); // Poll every 5 seconds
-    };
-
-    const showSuccess = (msg, receipt) => {
-        form.classList.add('hidden');
-        statusContainer.classList.add('hidden');
-        resultContainer.classList.remove('hidden');
-
-        resultContainer.classList.add('bg-green-100', 'border-green-400');
-        resultMessage.classList.add('text-green-700');
-        resultMessage.innerText = msg;
-
-        if (receipt) {
-            receiptNumber.classList.remove('hidden');
-            receiptNumber.innerText = `Receipt: ${receipt}`;
-            receiptNumber.classList.add('text-green-800');
-        }
     };
 
     const showError = (msg) => {

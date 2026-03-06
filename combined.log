@@ -1,0 +1,16 @@
+{"level":"info","message":"Server running in development mode on port 3000","service":"mpesa-stk-service","timestamp":"2026-03-02 11:59:21"}
+{"level":"error","message":"Error connecting to MongoDB: connect ECONNREFUSED ::1:27017, connect ECONNREFUSED 127.0.0.1:27017","service":"mpesa-stk-service","timestamp":"2026-03-02 11:59:51"}
+{"level":"info","message":"Server running in development mode on port 3000","service":"mpesa-stk-service","timestamp":"2026-03-02 12:03:33"}
+{"level":"info","message":"MongoDB Connected: localhost","service":"mpesa-stk-service","timestamp":"2026-03-02 12:03:34"}
+{"level":"info","message":"::1 - - [02/Mar/2026:12:05:12 +0000] \"GET / HTTP/1.1\" 200 3022 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36\"","service":"mpesa-stk-service","timestamp":"2026-03-02 12:05:12"}
+{"level":"info","message":"::1 - - [02/Mar/2026:12:05:12 +0000] \"GET /js/app.js HTTP/1.1\" 200 4012 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36\"","service":"mpesa-stk-service","timestamp":"2026-03-02 12:05:12"}
+{"level":"info","message":"Server running in development mode on port 3000","service":"mpesa-stk-service","timestamp":"2026-03-02 12:13:22"}
+{"level":"info","message":"MongoDB Connected: localhost","service":"mpesa-stk-service","timestamp":"2026-03-02 12:13:22"}
+{"level":"info","message":"::1 - - [02/Mar/2026:12:14:52 +0000] \"GET / HTTP/1.1\" 200 3022 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36\"","service":"mpesa-stk-service","timestamp":"2026-03-02 12:14:52"}
+{"level":"info","message":"::1 - - [02/Mar/2026:12:14:52 +0000] \"GET /js/app.js HTTP/1.1\" 200 4475 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36\"","service":"mpesa-stk-service","timestamp":"2026-03-02 12:14:52"}
+{"level":"info","message":"Server running in development mode on port 3000","service":"mpesa-stk-service","timestamp":"2026-03-02 12:29:44"}
+{"level":"info","message":"MongoDB Connected: localhost","service":"mpesa-stk-service","timestamp":"2026-03-02 12:29:44"}
+{"level":"info","message":"::1 - - [02/Mar/2026:12:31:07 +0000] \"GET / HTTP/1.1\" 200 3022 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36\"","service":"mpesa-stk-service","timestamp":"2026-03-02 12:31:07"}
+{"level":"info","message":"::1 - - [02/Mar/2026:12:31:07 +0000] \"GET /js/app.js HTTP/1.1\" 200 4403 \"-\" \"Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/143.0.7499.4 Safari/537.36\"","service":"mpesa-stk-service","timestamp":"2026-03-02 12:31:07"}
+{"level":"info","message":"Server running in development mode on port 3000","service":"mpesa-stk-service","timestamp":"2026-03-02 13:50:15"}
+{"level":"info","message":"MongoDB Connected: localhost","service":"mpesa-stk-service","timestamp":"2026-03-02 13:50:15"}

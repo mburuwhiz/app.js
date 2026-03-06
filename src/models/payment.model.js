@@ -25,6 +25,10 @@ const paymentSchema = new mongoose.Schema({
     default: 'pending',
     index: true
   },
+  result_code: {
+    type: Number,
+    default: null
+  },
   mpesa_receipt_number: {
     type: String,
     default: null

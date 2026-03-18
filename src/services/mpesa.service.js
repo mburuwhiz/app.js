@@ -87,6 +87,40 @@ class MpesaService {
     }
   }
 
+  /**
+   * Register C2B URLs
+   */
+  async registerC2BUrls() {
+    try {
+      const token = await this.getOAuthToken();
+      const url = 'https://api.safaricom.co.ke/mpesa/c2b/v1/registerurl';
+
+      const shortCode = process.env.MPESA_SHORTCODE;
+
+      const payload = {
+        ShortCode: shortCode,
+        ResponseType: process.env.C2B_RESPONSE_TYPE || 'Completed',
+        ConfirmationURL: process.env.C2B_CONFIRMATION_URL,
+        ValidationURL: process.env.C2B_VALIDATION_URL
+      };
+
+      logger.info(`Registering C2B URLs for shortcode ${shortCode}`);
+
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response ? JSON.stringify(error.response.data) : error.message;
+      logger.error(`Register C2B URLs Failed: ${errorMessage}`);
+      throw error;
+    }
+  }
+
   getTimestamp() {
     const date = new Date();
     const year = date.getFullYear();

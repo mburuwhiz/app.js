@@ -143,6 +143,87 @@ const processPaymentCallback = async ({ checkoutRequestId, status, amount, mpesa
   }
 };
 
+exports.registerC2B = async (req, res) => {
+  try {
+    const response = await mpesaService.registerC2BUrls();
+    res.json(response);
+  } catch (error) {
+    logger.error(`Register C2B URLs Error: ${error.message}`);
+    res.status(500).json({ message: 'Failed to register C2B URLs', details: error.message });
+  }
+};
+
+exports.c2bValidation = async (req, res) => {
+  logger.info('C2B Validation Received');
+  logger.info(JSON.stringify(req.body));
+
+  // Safaricom expects a response with ResultCode 0 for Accept, or any other for Reject.
+  // In a real system, you might validate the amount, account reference, etc.
+  res.json({
+    ResultCode: 0,
+    ResultDesc: "Accepted"
+  });
+};
+
+exports.c2bConfirmation = async (req, res) => {
+  logger.info('C2B Confirmation Received');
+  logger.info(JSON.stringify(req.body));
+
+  try {
+    const data = req.body;
+
+    const transactionType = data.TransactionType;
+    const transID = data.TransID;
+    const transTime = data.TransTime;
+    const transAmount = data.TransAmount;
+    const businessShortCode = data.BusinessShortCode;
+    const billRefNumber = data.BillRefNumber;
+    const invoiceNumber = data.InvoiceNumber;
+    const orgAccountBalance = data.OrgAccountBalance;
+    const thirdPartyTransID = data.ThirdPartyTransID;
+    const msisdn = data.MSISDN;
+    const firstName = data.FirstName || '';
+    const middleName = data.MiddleName || '';
+    const lastName = data.LastName || '';
+
+    const fullName = `${firstName} ${middleName} ${lastName}`.trim();
+
+    // Check if the transaction is already recorded (idempotency)
+    const existingPayment = await Payment.findOne({ mpesa_receipt_number: transID });
+
+    if (!existingPayment) {
+      const payment = new Payment({
+        transaction_type: 'C2B',
+        phone: mpesaService.normalizePhone(msisdn ? msisdn.toString() : ''),
+        amount: parseFloat(transAmount),
+        status: 'success',
+        result_code: 0,
+        mpesa_receipt_number: transID,
+        raw_callback_payload: data,
+        result_desc: 'C2B Payment Completed',
+        name: fullName
+      });
+
+      await payment.save();
+      logger.info(`C2B Payment saved successfully for Receipt: ${transID}`);
+    } else {
+      logger.info(`C2B Payment already exists for Receipt: ${transID}`);
+    }
+
+    res.json({
+      ResultCode: 0,
+      ResultDesc: "Success"
+    });
+  } catch (error) {
+    logger.error(`C2B Confirmation Error: ${error.message}`);
+    // Respond to Safaricom anyway to prevent retries if it's our internal error that won't resolve
+    res.json({
+      ResultCode: 0,
+      ResultDesc: "Success"
+    });
+  }
+};
+
 exports.checkStkStatus = async (req, res) => {
   const { checkoutRequestID } = req.params;
   try {

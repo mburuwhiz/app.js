@@ -16,6 +16,16 @@ router.get('/mpesa/status/:checkoutRequestID', authenticateApiKey, mpesaControll
 // Callback from Safaricom - NOT protected by API Key (must be public for Safaricom)
 router.post('/mpesa/callback', mpesaController.stkCallback);
 
+// --- C2B ENDPOINTS ---
+// Register C2B URLs - Protected by API Key
+router.post('/mpesa/c2b/register', authenticateApiKey, mpesaController.registerC2B);
+
+// C2B Validation URL - Public for Safaricom
+router.post('/mpesa/c2b/validation', mpesaController.c2bValidation);
+
+// C2B Confirmation URL - Public for Safaricom
+router.post('/mpesa/c2b/confirmation', mpesaController.c2bConfirmation);
+
 
 // --- ADMIN ENDPOINTS ---
 

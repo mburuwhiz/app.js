@@ -73,8 +73,40 @@ Public endpoint for Safaricom Daraja API to post transaction results.
 - **URL:** `/api/mpesa/callback`
 - **Method:** `POST`
 
+## Connecting to External Applications
+
+To connect your external application (e.g., Whiz POS) to the API, you must use the API keys generated in the Admin Settings. Include the key in your HTTP requests as follows:
+- Header: `x-api-key: [YOUR_API_KEY]`
+- OR Header: `Authorization: Bearer [YOUR_API_KEY]`
+
+### Real-Time Tracking Example
+
+To achieve real-time payment status updates in your frontend app without polling, you can leverage WebSockets or Server-Sent Events (SSE). When Safaricom hits your callback endpoint, the Node server will record the transaction and extract customer names from the C2B callback. You can emit a socket event (e.g., `payment_completed`) to connected clients with these transaction details, instantly updating the POS screen.
+
 ## Setup & Configuration
 
 1. Install dependencies: `npm install`
-2. Configure `.env` with your Safaricom Daraja credentials and MongoDB URL.
+2. Configure `.env` with your Safaricom Daraja credentials and MongoDB URL. See example configuration below.
 3. Start the server: `npm start`
+
+```env
+# App Configuration
+PORT=3000
+NODE_ENV=development
+CALLBACK_URL=https://mpesa.whizpoint.app/api/mpesa/callback
+
+# C2B Configuration
+C2B_VALIDATION_URL=https://mpesa.whizpoint.app/api/mpesa/c2b/validation
+C2B_CONFIRMATION_URL=https://mpesa.whizpoint.app/api/mpesa/c2b/confirmation
+C2B_RESPONSE_TYPE=Completed
+
+# MPESA Credentials (Sample)
+MPESA_CONSUMER_KEY=your_key
+MPESA_CONSUMER_SECRET=your_secret
+MPESA_PASSKEY=your_passkey
+MPESA_SHORTCODE=123456
+MPESA_PARTY_B=123456
+
+# Database
+DATABASE_URL=mongodb://localhost:27017/mpesa_db
+```

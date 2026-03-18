@@ -1,10 +1,16 @@
 const mongoose = require('mongoose');
 
 const paymentSchema = new mongoose.Schema({
+  transaction_type: {
+    type: String,
+    enum: ['STK', 'C2B'],
+    default: 'STK'
+  },
   checkout_request_id: {
     type: String,
-    required: true,
+    required: false,
     unique: true,
+    sparse: true,
     index: true
   },
   name: {
@@ -43,7 +49,7 @@ const paymentSchema = new mongoose.Schema({
   },
   merchant_request_id: {
     type: String,
-    required: true
+    required: false
   }
 }, {
   timestamps: true

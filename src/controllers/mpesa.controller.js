@@ -89,7 +89,8 @@ exports.stkCallback = async (req, res) => {
       mpesaReceiptNumber,
       phone,
       resultDesc,
-      rawPayload: data
+      rawPayload: data,
+      req // Pass req down to access socket.io instance
     });
 
   } catch (error) {
@@ -98,7 +99,7 @@ exports.stkCallback = async (req, res) => {
   }
 };
 
-const processPaymentCallback = async ({ checkoutRequestId, status, amount, mpesaReceiptNumber, phone, resultDesc, rawPayload }) => {
+const processPaymentCallback = async ({ checkoutRequestId, status, amount, mpesaReceiptNumber, phone, resultDesc, rawPayload, req }) => {
   try {
     // Find and update the payment document
     const payment = await Payment.findOne({ checkout_request_id: checkoutRequestId });
@@ -120,6 +121,19 @@ const processPaymentCallback = async ({ checkoutRequestId, status, amount, mpesa
         raw_callback_payload: rawPayload
       });
       await newPayment.save();
+
+      // Emit websocket event
+      if (req && req.app.get('socketio')) {
+        req.app.get('socketio').to(checkoutRequestId).emit('payment_status_update', {
+          status: status,
+          receipt: mpesaReceiptNumber,
+          amount: amount || 0,
+          phone: phone || 'Unknown',
+          name: 'Unknown',
+          message: resultDesc
+        });
+      }
+
       return;
     }
 
@@ -135,6 +149,18 @@ const processPaymentCallback = async ({ checkoutRequestId, status, amount, mpesa
 
     await payment.save();
     logger.info(`Payment status updated to ${status} for ${checkoutRequestId}`);
+
+    // Emit websocket event
+    if (req && req.app.get('socketio')) {
+      req.app.get('socketio').to(checkoutRequestId).emit('payment_status_update', {
+        status: status,
+        receipt: mpesaReceiptNumber,
+        amount: payment.amount,
+        phone: payment.phone,
+        name: payment.name || 'Unknown',
+        message: resultDesc
+      });
+    }
 
   } catch (error) {
     logger.error(`Database Update Error in Callback: ${error.message}`);
@@ -215,6 +241,25 @@ exports.c2bConfirmation = async (req, res) => {
 
     const c2bPayment = new C2BPayment(transaction);
     await c2bPayment.save();
+
+    // Broadcast C2B Payment
+    if (req.app.get('socketio')) {
+      // In C2B, the frontend might not know a specific trans_id beforehand,
+      // so we can broadcast to a general 'c2b_payments' room or similar.
+      req.app.get('socketio').emit('c2b_payment_received', transaction);
+
+      // If frontend subscribed via BillRefNumber
+      if(data.BillRefNumber) {
+        req.app.get('socketio').to(data.BillRefNumber).emit('payment_status_update', {
+           status: 'success',
+           receipt: data.TransID,
+           amount: data.TransAmount,
+           phone: data.MSISDN,
+           name: `${data.FirstName || ''} ${data.LastName || ''}`.trim(),
+           message: 'Payment received successfully'
+        });
+      }
+    }
 
     res.json({
       ResultCode: 0,

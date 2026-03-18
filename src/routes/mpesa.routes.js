@@ -11,6 +11,11 @@ router.post('/stk', authenticateApiKey, mpesaController.stkPush);
 // Callback from Safaricom - NOT protected by API Key (must be public for Safaricom)
 router.post('/mpesa/callback', mpesaController.stkCallback);
 
+// C2B Registration and Callbacks
+router.post('/c2b/register', authenticateAdmin, mpesaController.registerC2bUrl);
+router.post('/mpesa/c2b/validation', mpesaController.c2bValidation);
+router.post('/mpesa/c2b/confirmation', mpesaController.c2bConfirmation);
+
 // Admin Authentication
 router.post('/admin/login', adminController.login);
 

@@ -1,5 +1,6 @@
 const mpesaService = require('../services/mpesa.service');
 const Payment = require('../models/payment.model');
+const C2BPayment = require('../models/c2b_payment.model');
 const logger = require('../config/logger');
 
 exports.stkPush = async (req, res) => {
@@ -161,5 +162,70 @@ exports.checkStkStatus = async (req, res) => {
   } catch (error) {
     logger.error(`Check STK Status Error: ${error.message}`);
     res.status(500).json({ error: 'Failed to retrieve status' });
+  }
+};
+
+exports.registerC2bUrl = async (req, res) => {
+  try {
+    const response = await mpesaService.registerC2bUrl();
+    res.json({
+      success: true,
+      response: response
+    });
+  } catch (error) {
+    logger.error(`C2B Register URL Error: ${error.message}`);
+    res.status(500).json({ error: 'Failed to register C2B URLs', details: error.message });
+  }
+};
+
+exports.c2bValidation = async (req, res) => {
+  logger.info('C2B Validation Received');
+  logger.info(JSON.stringify(req.body));
+
+  // For C2B, returning ResultCode 0 means accept the transaction
+  res.json({
+    ResultCode: 0,
+    ResultDesc: "Accepted"
+  });
+};
+
+exports.c2bConfirmation = async (req, res) => {
+  logger.info('C2B Confirmation Received');
+  logger.info(JSON.stringify(req.body));
+
+  try {
+    const data = req.body;
+
+    const transaction = {
+      transaction_type: data.TransactionType,
+      trans_id: data.TransID,
+      trans_time: data.TransTime,
+      trans_amount: data.TransAmount,
+      business_short_code: data.BusinessShortCode,
+      bill_ref_number: data.BillRefNumber,
+      invoice_number: data.InvoiceNumber,
+      org_account_balance: data.OrgAccountBalance,
+      third_party_trans_id: data.ThirdPartyTransID,
+      msisdn: data.MSISDN,
+      first_name: data.FirstName,
+      middle_name: data.MiddleName,
+      last_name: data.LastName,
+      raw_payload: data
+    };
+
+    const c2bPayment = new C2BPayment(transaction);
+    await c2bPayment.save();
+
+    res.json({
+      ResultCode: 0,
+      ResultDesc: "Success"
+    });
+  } catch (error) {
+    logger.error(`C2B Confirmation Processing Error: ${error.message}`);
+    // Respond to Safaricom even on error, they just want an acknowledgement
+    res.json({
+      ResultCode: 0,
+      ResultDesc: "Success"
+    });
   }
 };

@@ -21,7 +21,12 @@ class MpesaService {
       const consumerKey = process.env.MPESA_CONSUMER_KEY;
       const consumerSecret = process.env.MPESA_CONSUMER_SECRET;
       const auth = Buffer.from(`${consumerKey}:${consumerSecret}`).toString('base64');
-      const url = 'https://api.safaricom.co.ke/oauth/v1/generate?grant_type=client_credentials';
+
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://api.safaricom.co.ke'
+        : 'https://sandbox.safaricom.co.ke';
+
+      const url = `${baseUrl}/oauth/v1/generate?grant_type=client_credentials`;
 
       const response = await axios.get(url, {
         headers: {
@@ -44,7 +49,12 @@ class MpesaService {
   async initiateStkPush(phone, amount, accountReference, transactionDesc) {
     try {
       const token = await this.getOAuthToken();
-      const url = 'https://api.safaricom.co.ke/mpesa/stkpush/v1/processrequest';
+
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://api.safaricom.co.ke'
+        : 'https://sandbox.safaricom.co.ke';
+
+      const url = `${baseUrl}/mpesa/stkpush/v1/processrequest`;
 
       const shortCode = process.env.MPESA_SHORTCODE; // 7128505
       const passkey = process.env.MPESA_PASSKEY;
@@ -83,6 +93,44 @@ class MpesaService {
     } catch (error) {
       const errorMessage = error.response ? JSON.stringify(error.response.data) : error.message;
       logger.error(`STK Push Failed: ${errorMessage}`);
+      throw error;
+    }
+  }
+
+  /**
+   * Register C2B URLs (Validation & Confirmation)
+   */
+  async registerC2bUrl() {
+    try {
+      const token = await this.getOAuthToken();
+
+      const baseUrl = process.env.NODE_ENV === 'production'
+        ? 'https://api.safaricom.co.ke'
+        : 'https://sandbox.safaricom.co.ke';
+
+      const url = `${baseUrl}/mpesa/c2b/v1/registerurl`;
+      const shortCode = process.env.MPESA_SHORTCODE;
+
+      const payload = {
+        ShortCode: shortCode,
+        ResponseType: process.env.C2B_RESPONSE_TYPE || 'Completed',
+        ConfirmationURL: process.env.C2B_CONFIRMATION_URL,
+        ValidationURL: process.env.C2B_VALIDATION_URL
+      };
+
+      logger.info(`Registering C2B URLs for shortcode ${shortCode}`);
+
+      const response = await axios.post(url, payload, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+
+      return response.data;
+    } catch (error) {
+      const errorMessage = error.response ? JSON.stringify(error.response.data) : error.message;
+      logger.error(`C2B Register URL Failed: ${errorMessage}`);
       throw error;
     }
   }
